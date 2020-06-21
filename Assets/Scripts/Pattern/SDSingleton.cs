@@ -20,11 +20,13 @@ public class SDSingleton<T> : MonoBehaviour where T : MonoBehaviour
         }
     }
 
-    protected void SetInstance(T instance, bool dontDestroyOnLoad = true)
+    protected void SetInstance(T inst, bool dontDestroyOnLoad = true)
     {
-        _instance = instance;
+        if (_instance != null)
+            throw new System.Exception($"{typeof(T)}의 인스턴스가 이미 설정되어있습니다. 두개 이상의 싱글톤를 배치하셨나요?");
+        _instance = inst;
         if (dontDestroyOnLoad)
-            DontDestroyOnLoad(instance);
+            DontDestroyOnLoad(_instance);
     }
 
 }

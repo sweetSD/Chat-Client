@@ -43,7 +43,7 @@ Material:
     - _DirectLightMultiplier: 0.25
     - _EdgeThickness: 1
     - _IndirectLightMultiplier: 1
-    - _OutlineWidth: 0.0015
+    - _OutlineWidth: 0.001
     - _ReceiveShadowMappingAmount: 0.5
     - _UseAlphaClipping: 1
     - _UseEmission: 0
