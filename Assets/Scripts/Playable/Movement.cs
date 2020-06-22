@@ -13,14 +13,15 @@ public class Movement : NetworkView
     {
         if (isMine)
         {
-#if UNITY_STANDALONE
+#if UNITY_STANDALONE || UNITY_EDITOR
             // UNITY STANDALONE INPUTs.
             _velocity = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
 #elif UNITY_ANDROID
             // UNITY ANDROID INPUTs.
+            _velocity = new Vector3(SDUIManager.I.MovementJoyStick.Horizontal, 0, SDUIManager.I.MovementJoyStick.Vertical);
 #endif
 
-            if(_velocity.sqrMagnitude > 0)
+            if (_velocity.sqrMagnitude > 0)
                 _animator.SetBool("isRunning", true);
             else
                 _animator.SetBool("isRunning", false);

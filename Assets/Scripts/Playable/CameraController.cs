@@ -20,7 +20,12 @@ public class CameraController : MonoBehaviour
 
     private void Update()
     {
+#if UNITY_STANDALONE || UNITY_EDITOR
         _mouseInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+#elif UNITY_ANDROID
+        _mouseInput = SDUIManager.I.CameraControlDetector.DragDelta * Time.deltaTime;
+
+#endif
     }
 
     private void FixedUpdate()
