@@ -37,20 +37,13 @@ public class SDSecurityManager : SDSingleton<SDSecurityManager>
     /// <returns></returns>
     public string Encrypt(string data)
     {
-        var encrypt = _aes.CreateEncryptor(_aes.Key, _aes.IV);
+        byte[] src = Encoding.UTF8.GetBytes(data);
 
-        byte[] buffer = null;
-        using(var ms = new MemoryStream())
+        using (ICryptoTransform encrypt = _aes.CreateEncryptor(_aes.Key, _aes.IV))
         {
-            using (var cs = new CryptoStream(ms, encrypt, CryptoStreamMode.Write))
-            {
-                byte[] dataBytes = Encoding.UTF8.GetBytes(data);
-                cs.Write(dataBytes, 0, dataBytes.Length);
-            }
-
-            buffer = ms.ToArray();
+            byte[] dest = encrypt.TransformFinalBlock(src, 0, src.Length);
+            return Convert.ToBase64String(dest);
         }
-        return Encoding.UTF8.GetString(buffer);
     }
 
     /// <summary>
@@ -60,19 +53,12 @@ public class SDSecurityManager : SDSingleton<SDSecurityManager>
     /// <returns></returns>
     public string Decrypt(string data)
     {
-        var decrypt = _aes.CreateDecryptor(_aes.Key, _aes.IV);
+        byte[] src = Convert.FromBase64String(data);
 
-        byte[] buffer = null;
-        using (var ms = new MemoryStream())
+        using (ICryptoTransform decrypt = _aes.CreateDecryptor(_aes.Key, _aes.IV))
         {
-            using (var cs = new CryptoStream(ms, decrypt, CryptoStreamMode.Write))
-            {
-                byte[] dataBytes = Encoding.UTF8.GetBytes(data);
-                cs.Write(dataBytes, 0, dataBytes.Length);
-            }
-
-            buffer = ms.ToArray();
+            byte[] dest = decrypt.TransformFinalBlock(src, 0, src.Length);
+            return Encoding.UTF8.GetString(dest);
         }
-        return Encoding.UTF8.GetString(buffer);
     }
 }
