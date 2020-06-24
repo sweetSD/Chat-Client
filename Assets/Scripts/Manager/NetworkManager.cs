@@ -156,6 +156,8 @@ public class NetworkManager : SDSingleton<NetworkManager>
                 }
                 break;
             case PacketType.MESSAGE:
+                string message = packet.Pop<string>();
+                Debug.Log($"{header.clientId} / {message}");
                 break;
             case PacketType.TRANSLATE:
                 for (int i = 0; i < _networkViews.Count; i++)
@@ -222,7 +224,9 @@ public class NetworkManager : SDSingleton<NetworkManager>
 
     public void SendMessageToServer(string message)
     {
-        SendToServer(Encoding.UTF8.GetBytes(message));
+        Packet packet = new Packet(false, new Header(PacketType.MESSAGE));
+        packet.Push(message, message.Length);
+        SendToServer(packet.Buffer, packet.PushBufferPosition);
     }
 
     public void SendToServer(byte[] buffer, int size = -1)

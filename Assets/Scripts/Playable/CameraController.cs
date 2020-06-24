@@ -14,7 +14,7 @@ public class CameraController : MonoBehaviour
     private void Awake()
     {
         if (_cameraTransform == null)
-            _cameraTransform = FindObjectOfType<Camera>().transform;
+            _cameraTransform = Camera.main.transform;
         _cameraTransform.localPosition = new Vector3(0, 0, -_offset);
     }
 
@@ -23,7 +23,7 @@ public class CameraController : MonoBehaviour
 #if UNITY_STANDALONE || UNITY_EDITOR
         _mouseInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
 #elif UNITY_ANDROID
-        _mouseInput = SDUIManager.I.CameraControlDetector.DragDelta * Time.deltaTime;
+        _mouseInput = SDUIManager.I.CameraControlDetector.DragDelta * 2 * Time.deltaTime;
 
 #endif
     }

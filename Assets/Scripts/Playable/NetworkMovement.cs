@@ -2,12 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Movement : NetworkView
+public class NetworkMovement : NetworkView
 {
     [SerializeField] private float _moveSpeed = 5f;
     [SerializeField] private Animator _animator;
 
     private Vector3 _velocity = Vector3.zero;
+
+    private void Awake()
+    {
+        Camera.main.transform.parent = transform;
+    }
 
     private void Update()
     {
