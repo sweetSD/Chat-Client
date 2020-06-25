@@ -43,8 +43,8 @@ public class NetworkManager : SDSingleton<NetworkManager>
     List<NetworkView> _networkViews = new List<NetworkView>();
     List<UnityAction> _invokeMainActions = new List<UnityAction>();
 
-    [SerializeField]
-    private NetworkView _playerPrefab;
+    [Header("Playable")]
+    [SerializeField] private NetworkView _playerPrefab;
 
     private void Awake()
     {
@@ -158,6 +158,9 @@ public class NetworkManager : SDSingleton<NetworkManager>
             case PacketType.MESSAGE:
                 string message = packet.Pop<string>();
                 Debug.Log($"{header.clientId} / {message}");
+                SDUIManager.I.ChatBoxPool.ActiveObject(Vector3.zero, Vector3.zero, Vector3.one)
+                    .GetComponent<ChatBox>()
+                    .SetData(header.clientId.ToString(), message);
                 break;
             case PacketType.TRANSLATE:
                 for (int i = 0; i < _networkViews.Count; i++)
@@ -227,6 +230,9 @@ public class NetworkManager : SDSingleton<NetworkManager>
         Packet packet = new Packet(false, new Header(PacketType.MESSAGE));
         packet.Push(message, message.Length);
         SendToServer(packet.Buffer, packet.PushBufferPosition);
+        SDUIManager.I.ChatBoxPool.ActiveObject(Vector3.zero, Vector3.zero, Vector3.one)
+                    .GetComponent<ChatBox>()
+                    .SetData(_clientId.ToString(), message);
     }
 
     public void SendToServer(byte[] buffer, int size = -1)

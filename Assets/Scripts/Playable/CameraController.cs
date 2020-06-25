@@ -15,6 +15,7 @@ public class CameraController : MonoBehaviour
     {
         if (_cameraTransform == null)
             _cameraTransform = Camera.main.transform;
+        _cameraTransform.SetParent(_cameraContainer);
         _cameraTransform.localPosition = new Vector3(0, 0, -_offset);
     }
 

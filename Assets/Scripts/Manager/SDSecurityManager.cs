@@ -12,8 +12,8 @@ using System.IO;
 /// </summary>
 public class SDSecurityManager : SDSingleton<SDSecurityManager>
 {
-    private static readonly string _securityKey = "gbirtgbutrhgb8rhg8ehg97g7u3h8ygh9843ghyu8erfhgvy8dfhgy8";
-    private static readonly byte[] _securityIv = new byte[] { 45, 12, 89, 47, 32, 59, 12, 48, 65, 45, 12, 50, 94};
+    private static readonly string _securityKey = "fiwkdu876au6w5uj";
+    private static readonly byte[] _securityIv = new byte[] { 45, 12, 89, 47, 32, 59, 12, 48, 65, 45, 12, 50, 94, 32, 12, 54 };
 
     private RijndaelManaged _aes = new RijndaelManaged();
 
