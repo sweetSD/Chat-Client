@@ -9,11 +9,6 @@ public class NetworkMovement : NetworkView
 
     private Vector3 _velocity = Vector3.zero;
 
-    private void Awake()
-    {
-        Camera.main.transform.parent = transform;
-    }
-
     private void Update()
     {
         if (isMine)

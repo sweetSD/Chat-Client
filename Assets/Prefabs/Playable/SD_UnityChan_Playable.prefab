@@ -97,6 +97,7 @@ MonoBehaviour:
   _offset: 3
   _cameraContainer: {fileID: 5373004275394926437}
   _cameraTransform: {fileID: 0}
+  _networkView: {fileID: 5373004276173102027}
 --- !u!136 &5373004276173102025
 CapsuleCollider:
   m_ObjectHideFlags: 0

@@ -66,6 +66,11 @@ public class Packet
         _bufferSize = size;
     }
 
+    /// <summary>
+    /// 구조체를 데이터에 추가합니다.
+    /// </summary>
+    /// <param name="obj">추가하려는 데이터</param>
+    /// <param name="size">추가하려는 데이터 크기</param>
     public void Push(object obj, int size)
     {
         if (PushBufferPosition + size >= BufferSize)
@@ -82,6 +87,37 @@ public class Packet
         catch { }
     }
 
+    /// <summary>
+    /// 문자열을 데이터에 추가합니다.
+    /// </summary>
+    /// <param name="msg">추가하려는 문자열</param>
+    /// <param name="size">추가하려는 문자열 크기</param>
+    public int Push(byte[] bytes)
+    {
+        int size = bytes.Length;
+
+        if (PushBufferPosition + size >= BufferSize)
+            return -1;
+
+        try
+        {
+            IntPtr ptr = Marshal.AllocHGlobal(size);
+            //ptr = Marshal.StringToHGlobalAnsi(msg);
+            Marshal.Copy(bytes, 0, ptr, size);
+            Marshal.Copy(ptr, _buffer, PushBufferPosition, size);
+            Marshal.FreeHGlobal(ptr);
+            _pushBufferPosition += size;
+        }
+        catch { }
+
+        return size;
+    }
+
+    /// <summary>
+    /// 데이터에서 T의 데이터를 가져옵니다.
+    /// </summary>
+    /// <typeparam name="T">가져올 데이터 타입</typeparam>
+    /// <returns></returns>
     public T Pop<T>()
     {
         int size = Marshal.SizeOf<T>();
@@ -98,6 +134,30 @@ public class Packet
             Marshal.FreeHGlobal(ptr);
         }
         return obj;
+    }
+
+    /// <summary>
+    /// 데이터에서 문자열을 가져옵니다.
+    /// </summary>
+    /// <param name="size">가져올 문자열의 길이</param>
+    /// <returns></returns>
+    public string Pop(int size)
+    {
+        IntPtr ptr = Marshal.AllocHGlobal(size);
+        byte[] bytes = new byte[size];
+        string msg = string.Empty;
+        try
+        {
+            Marshal.Copy(_buffer, _popBufferPosition, ptr, size);
+            Marshal.Copy(ptr, bytes, 0, size);
+            msg = System.Text.Encoding.UTF8.GetString(bytes);
+            _popBufferPosition += size;
+        }
+        finally
+        {
+            Marshal.FreeHGlobal(ptr);
+        }
+        return msg;
     }
 
     public void Clear()

@@ -156,11 +156,14 @@ public class NetworkManager : SDSingleton<NetworkManager>
                 }
                 break;
             case PacketType.MESSAGE:
-                string message = packet.Pop<string>();
-                Debug.Log($"{header.clientId} / {message}");
-                SDUIManager.I.ChatBoxPool.ActiveObject(Vector3.zero, Vector3.zero, Vector3.one)
-                    .GetComponent<ChatBox>()
-                    .SetData(header.clientId.ToString(), message);
+                string message = packet.Pop(header.dataSize);
+                _invokeMainActions.Add(() =>
+                {
+                    Debug.Log($"{header.clientId} / {message}");
+                    SDUIManager.I.ChatBoxPool.ActiveObject(Vector3.zero, Vector3.zero, Vector3.one)
+                        .GetComponent<ChatBox>()
+                        .SetData(header.clientId.ToString(), message);
+                });
                 break;
             case PacketType.TRANSLATE:
                 for (int i = 0; i < _networkViews.Count; i++)
@@ -227,8 +230,9 @@ public class NetworkManager : SDSingleton<NetworkManager>
 
     public void SendMessageToServer(string message)
     {
-        Packet packet = new Packet(false, new Header(PacketType.MESSAGE));
-        packet.Push(message, message.Length);
+        var msgBytes = Encoding.UTF8.GetBytes(message);
+        Packet packet = new Packet(false, new Header(PacketType.MESSAGE, -1, msgBytes.Length));
+        packet.Push(msgBytes);
         SendToServer(packet.Buffer, packet.PushBufferPosition);
         SDUIManager.I.ChatBoxPool.ActiveObject(Vector3.zero, Vector3.zero, Vector3.one)
                     .GetComponent<ChatBox>()
