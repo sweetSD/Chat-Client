@@ -19,7 +19,7 @@ public class NetworkManager : SDSingleton<NetworkManager>
     public int ClientId => _clientId;
 
     // 서버와 통신할 틱레이트 (초당)
-    private int _tickRate = 16;
+    [SerializeField] private int _tickRate = 16;
     public int TickRate
     {
         get => _tickRate;
@@ -42,6 +42,13 @@ public class NetworkManager : SDSingleton<NetworkManager>
     // 서버로부터 받아온 모든 Network 객체들 리스트
     List<NetworkView> _networkViews = new List<NetworkView>();
     List<UnityAction> _invokeMainActions = new List<UnityAction>();
+
+    [Header("Server Info")]
+    [SerializeField] private string _serverAddress;
+
+    [Header("Debugging")]
+    [SerializeField] private SDDebugPerSecond _sendDPS;
+    [SerializeField] private SDDebugPerSecond _recvDPS;
 
     [Header("Playable")]
     [SerializeField] private NetworkView _playerPrefab;
@@ -90,7 +97,7 @@ public class NetworkManager : SDSingleton<NetworkManager>
         _tcpClient = new TcpClient();
         try
         {
-            _tcpClient.Connect("127.0.0.1", 4000);
+            _tcpClient.Connect(_serverAddress, 4000);
             _networkStream = _tcpClient.GetStream();
         }
         catch (System.Exception e)
@@ -120,6 +127,8 @@ public class NetworkManager : SDSingleton<NetworkManager>
                 {
                     Debug.LogError($"Error occured while packet processing.. {e.Message}");
                 }
+                if (_recvDPS != null)
+                    _recvDPS.Report();
             }
         }
     }
@@ -208,9 +217,11 @@ public class NetworkManager : SDSingleton<NetworkManager>
     // 서버로 데이터를 보내는 프로세스 코루틴 함수
     IEnumerator CO_Process()
     {
-        _processDelay = new WaitForSeconds(1 / _tickRate);
+        _processDelay = new WaitForSeconds(1f / _tickRate);
         while(true)
         {
+            if (_sendDPS != null)
+                _sendDPS.Report();
             if (_networkStream != null && _clientId != ~0)
             {
                 for (int i = 0; i < _networkViews.Count; i++)
