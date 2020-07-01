@@ -3,7 +3,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
 
-public enum PacketType : short
+public enum PacketType : int
 {
     NONE = 0x00,
     MESSAGE,
@@ -14,20 +14,23 @@ public enum PacketType : short
     CLIENT_LIST
 };
 
+[Serializable]
 public struct Header
 {
     public int clientId;
 	public PacketType type;
+    public int nameSize;
     public int dataSize;
 
-    public Header(PacketType _type = PacketType.NONE, int id = -1, int size = (int)E_NETWORK.MAX_BUFFER_SIZE)
+    public Header(PacketType _type = PacketType.NONE, int _nameSize = 0, int _size = (int)E_NETWORK.MAX_BUFFER_SIZE, int _id = -1)
     {
-        if (id == -1)
+        if (_id == -1)
             this.clientId = NetworkManager.I.ClientId;
         else
-            this.clientId = id;
+            this.clientId = _id;
         this.type = _type;
-        this.dataSize = size;
+        this.nameSize = _nameSize;
+        this.dataSize = _size;
     }
 };
 
@@ -121,6 +124,8 @@ public class Packet
     public T Pop<T>()
     {
         int size = Marshal.SizeOf<T>();
+        if (size <= 0)
+            return default(T);
         IntPtr ptr = Marshal.AllocHGlobal(size);
         T obj = default(T);
         try
@@ -143,6 +148,8 @@ public class Packet
     /// <returns></returns>
     public string Pop(int size)
     {
+        if (size <= 0)
+            return string.Empty;
         IntPtr ptr = Marshal.AllocHGlobal(size);
         byte[] bytes = new byte[size];
         string msg = string.Empty;

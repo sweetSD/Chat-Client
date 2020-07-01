@@ -17,6 +17,8 @@ public class SDUIManager : SDSingleton<SDUIManager>
 
     [SerializeField] private InputField _chatInputField;
 
+    [SerializeField] private Image _image;
+
     private void Awake()
     {
         SetInstance(this, false);
@@ -29,5 +31,23 @@ public class SDUIManager : SDSingleton<SDUIManager>
                 _chatInputField.text = string.Empty;
             }
         });
+    }
+
+    /// <summary>
+    /// 말풍선 캐릭터 위치 생성 테스트
+    /// </summary>
+    public void test()
+    {
+        var rt = _image.canvas.GetComponent<RectTransform>();
+        var vp = Camera.main.WorldToViewportPoint(FindObjectOfType<NetworkMovement>().transform.position);
+        var sp = new Vector2(
+         ((vp.x * rt.sizeDelta.x) - (rt.sizeDelta.x * 0.5f)),
+         ((vp.y * rt.sizeDelta.y) - (rt.sizeDelta.y * 0.5f)));
+        _image.rectTransform.anchoredPosition = sp;
+    }
+
+    private void Update()
+    {
+        test();
     }
 }

@@ -137,8 +137,9 @@ public class NetworkManager : SDSingleton<NetworkManager>
     private void PacketProcess(Packet packet)
     {
         var header = packet.Pop<Header>();
+        string nickname = packet.Pop(header.nameSize);
 
-        switch(header.type)
+        switch (header.type)
         {
             case PacketType.NONE:
                 break;
@@ -168,10 +169,10 @@ public class NetworkManager : SDSingleton<NetworkManager>
                 string message = packet.Pop(header.dataSize);
                 _invokeMainActions.Add(() =>
                 {
-                    Debug.Log($"{header.clientId} / {message}");
+                    Debug.Log($"{header.clientId} / {nickname} / {message}");
                     SDUIManager.I.ChatBoxPool.ActiveObject(Vector3.zero, Vector3.zero, Vector3.one)
                         .GetComponent<ChatBox>()
-                        .SetData(header.clientId.ToString(), message);
+                        .SetData($"{header.clientId.ToString()}\n{nickname}", message);
                 });
                 break;
             case PacketType.TRANSLATE:
@@ -241,8 +242,10 @@ public class NetworkManager : SDSingleton<NetworkManager>
 
     public void SendMessageToServer(string message)
     {
+        var nameBytes = System.Text.Encoding.UTF8.GetBytes("sweetSD");
         var msgBytes = Encoding.UTF8.GetBytes(message);
-        Packet packet = new Packet(false, new Header(PacketType.MESSAGE, -1, msgBytes.Length));
+        Packet packet = new Packet(false, new Header(_type: PacketType.MESSAGE, _nameSize: nameBytes.Length, _size: msgBytes.Length));
+        packet.Push(nameBytes);
         packet.Push(msgBytes);
         SendToServer(packet.Buffer, packet.PushBufferPosition);
         SDUIManager.I.ChatBoxPool.ActiveObject(Vector3.zero, Vector3.zero, Vector3.one)

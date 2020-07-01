@@ -70,7 +70,7 @@ public class NetworkMovement : NetworkView
     {
         if (isMine)
         {
-            packet = new Packet(false, new Header(PacketType.TRANSLATE, base.NetworkID));
+            packet = new Packet(false, new Header(_type: PacketType.TRANSLATE));
             packet.Push(new CustomVector3(transform.position), System.Runtime.InteropServices.Marshal.SizeOf<CustomVector3>());
             packet.Push(new CustomVector3(transform.eulerAngles), System.Runtime.InteropServices.Marshal.SizeOf<CustomVector3>());
             packet.Push(new CustomVector3(transform.localScale), System.Runtime.InteropServices.Marshal.SizeOf<CustomVector3>());
