@@ -6,7 +6,13 @@ using UnityEngine.UI;
 public class ChatBubble : MonoBehaviour
 {
     [SerializeField] private RectTransform _rectTransform;
-    private Transform _targetTransform;
+    [SerializeField] private Text _text;
+
+    [SerializeField] private Transform _targetTransform;
+    public Transform TargetTransform => _targetTransform;
+    [SerializeField] private Transform _graphicRootTransform;
+    public Transform GraphicRootTransform => _graphicRootTransform;
+    [SerializeField] private float _chatBubbleHoldDelay = 5;
 
     private void Awake()
     {
@@ -17,6 +23,14 @@ public class ChatBubble : MonoBehaviour
     public void Initialize(Transform targetTransform)
     {
         _targetTransform = targetTransform;
+    }
+
+    public void SetData(string sender, string message)
+    {
+        _text.text = $"{sender}:{message}";
+        SDObjectManager.I.StopSetActive(_graphicRootTransform.gameObject);
+        _graphicRootTransform.gameObject.SetActive(true);
+        _graphicRootTransform.gameObject.SetActive(false, _chatBubbleHoldDelay);
     }
 
     private void Update()

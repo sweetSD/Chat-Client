@@ -18,6 +18,13 @@ public class NetworkManager : SDSingleton<NetworkManager>
     private int _clientId = -1;
     public int ClientId => _clientId;
 
+    private string _nickname = "User";
+    public string Nickname
+    {
+        get => _nickname;
+        set => _nickname = value;
+    }
+
     // 서버와 통신할 틱레이트 (초당)
     [SerializeField] private int _tickRate = 16;
     public int TickRate
@@ -170,9 +177,7 @@ public class NetworkManager : SDSingleton<NetworkManager>
                 _invokeMainActions.Add(() =>
                 {
                     Debug.Log($"{header.clientId} / {nickname} / {message}");
-                    SDUIManager.I.ChatBoxPool.ActiveObject(Vector3.zero, Vector3.zero, Vector3.one)
-                        .GetComponent<ChatBox>()
-                        .SetData($"{header.clientId.ToString()}\n{nickname}", message);
+                    SDUIManager.I.AddChatUI(nickname, message, _networkViews.Find((e) => e.NetworkID == header.clientId).transform);
                 });
                 break;
             case PacketType.TRANSLATE:
@@ -242,15 +247,13 @@ public class NetworkManager : SDSingleton<NetworkManager>
 
     public void SendMessageToServer(string message)
     {
-        var nameBytes = System.Text.Encoding.UTF8.GetBytes("sweetSD");
+        var nameBytes = System.Text.Encoding.UTF8.GetBytes(Nickname);
         var msgBytes = Encoding.UTF8.GetBytes(message);
         Packet packet = new Packet(false, new Header(_type: PacketType.MESSAGE, _nameSize: nameBytes.Length, _size: msgBytes.Length));
         packet.Push(nameBytes);
         packet.Push(msgBytes);
         SendToServer(packet.Buffer, packet.PushBufferPosition);
-        SDUIManager.I.ChatBoxPool.ActiveObject(Vector3.zero, Vector3.zero, Vector3.one)
-                    .GetComponent<ChatBox>()
-                    .SetData(_clientId.ToString(), message);
+        SDUIManager.I.AddChatUI(Nickname, message, _networkViews.Find((e) => e.NetworkID == ClientId).transform);
     }
 
     public void SendToServer(byte[] buffer, int size = -1)

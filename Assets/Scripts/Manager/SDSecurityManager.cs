@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 using System.IO;
 
 /// <summary>
-/// Created by sweetSD. (with Singletone)
+/// Created by sweetSD. (with Singleton)
 /// 
 /// AES256을 사용하는 보안 스크립트입니다.
 /// _securityKey와 _securityIv를 직접 설정하여 사용해주세요.

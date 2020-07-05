@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Created by sweetSD. (with Singletone)
+/// Created by sweetSD. (with Singleton)
 /// 
 /// Unity의 PlayerPrefs를 좀 더 안전하게 사용할 수 있도록
 /// AES256을 이용하여 복호화하여 저장합니다.

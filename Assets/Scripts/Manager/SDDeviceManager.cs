@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Linq;
 
 /// <summary>
-/// Created by sweetSD. (with Singletone)
+/// Created by sweetSD. (with Singleton)
 /// 
 /// 디바이스 정보 매니저 스크립트입니다.
 /// 

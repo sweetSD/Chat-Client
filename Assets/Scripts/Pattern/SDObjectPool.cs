@@ -11,6 +11,7 @@ public class SDObjectPool : MonoBehaviour
     [Header("Pool Objects")]
     [Tooltip("오브젝트 풀링에 사용될 오브젝트들입니다.")]
     [SerializeField] protected List<GameObject> _objectPool = null;
+    public List<GameObject> ObjectPool => _objectPool;
 
     [Header("Pool Object")]
     [Tooltip("오브젝트 풀링에 사용될 오브젝트입니다.")]
@@ -58,7 +59,7 @@ public class SDObjectPool : MonoBehaviour
     /// <param name="rotVec3">회전</param>
     /// <param name="sclVec3">스케일</param>
     /// <returns></returns>
-    public virtual GameObject ActiveObject(Vector3 posVec3, Vector3 rotVec3, Vector3 sclVec3)
+    public virtual T ActiveObject<T>(Vector3 posVec3, Vector3 rotVec3, Vector3 sclVec3) where T : MonoBehaviour
     {
         for (int i = 0; i < _objectPool.Count; i++)
         {
@@ -69,13 +70,13 @@ public class SDObjectPool : MonoBehaviour
                 objTransform.localEulerAngles = rotVec3;
                 objTransform.localScale = sclVec3;
                 objTransform.gameObject.SetActive(true);
-                return objTransform.gameObject;
+                return typeof(T).Equals(typeof(GameObject)) ? objTransform.gameObject as T : objTransform.GetComponent<T>();
             }
         }
         if (_flexible)
         {
             _objectPool.Add(Instantiate(_poolObject, Vector3.zero, Quaternion.identity, _poolRoot));
-            return _objectPool[_objectPool.Count - 1];
+            return typeof(T).Equals(typeof(GameObject)) ? _objectPool[_objectPool.Count - 1] as T : _objectPool[_objectPool.Count - 1].GetComponent<T>();
         }
         else
             return null;
