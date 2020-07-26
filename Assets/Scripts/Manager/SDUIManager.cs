@@ -49,9 +49,6 @@ public class SDUIManager : SDSingleton<SDUIManager>
 
     public void AddChatUI(string sender, string message, Transform targetTransform)
     {
-        _chatBoxPool.ActiveObject<ChatBox>(Vector3.zero, Vector3.zero, Vector3.one)
-                    .SetData(sender.ToString(), message);
-
         if (_chatBubblePool.ObjectPool.Any((e) => e.GetComponent<ChatBubble>().TargetTransform == targetTransform))
         {
             _chatBubblePool.ObjectPool.Find((e) => e.GetComponent<ChatBubble>().TargetTransform == targetTransform)

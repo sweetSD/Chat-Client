@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class ChatBubble : MonoBehaviour
 {
     [SerializeField] private RectTransform _rectTransform;
+    [SerializeField] private RectTransform _canvasRectTransform;
     [SerializeField] private Text _text;
 
     [SerializeField] private Transform _targetTransform;
@@ -18,6 +19,8 @@ public class ChatBubble : MonoBehaviour
     {
         if (_rectTransform == null)
             _rectTransform = GetComponent<RectTransform>();
+        if (_canvasRectTransform == null)
+            _canvasRectTransform = transform.root.Find("Canvas").GetComponent<RectTransform>();
     }
 
     public void Initialize(Transform targetTransform)
@@ -37,10 +40,10 @@ public class ChatBubble : MonoBehaviour
     {
         if (_targetTransform != null)
         {
-            var vp = Camera.main.WorldToViewportPoint(_targetTransform.position);
+            var vp = Camera.main.WorldToViewportPoint(_targetTransform.position + Vector3.up * 1.2f);
             var sp = new Vector2(
-             ((vp.x * _rectTransform.sizeDelta.x) - (_rectTransform.sizeDelta.x * 0.5f)),
-             ((vp.y * _rectTransform.sizeDelta.y) - (_rectTransform.sizeDelta.y * 0.5f)));
+             ((vp.x * _canvasRectTransform.sizeDelta.x) - (_canvasRectTransform.sizeDelta.x * 0.5f)),
+             ((vp.y * _canvasRectTransform.sizeDelta.y) - (_canvasRectTransform.sizeDelta.y * 0.5f)));
             _rectTransform.anchoredPosition = sp;
         }
     }
