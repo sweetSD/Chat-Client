@@ -2,6 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Created by sweetSD.
+/// 
+/// 디자인 패턴 중 하나인 싱글톤 패턴입니다. 
+/// SDSingleton<TYPE> 을 상속받아 사용하세요.
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public class SDSingleton<T> : MonoBehaviour where T : MonoBehaviour
 {
     private static T _instance = null;

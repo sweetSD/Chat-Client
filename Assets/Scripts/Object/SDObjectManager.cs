@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
+/// Created by sweetSD.
+/// 
 /// GameObject 클래스의 Extension 함수들을 모아둔 static class 입니다.
 /// </summary>
 public static class GameObjectExtension

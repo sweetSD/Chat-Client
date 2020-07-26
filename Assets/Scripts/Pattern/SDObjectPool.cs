@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
+/// Created by sweetSD.
+/// 
 /// 오브젝트 풀입니다.
 /// 원하시는 오브젝트로 상속하여 사용할 수 있습니다.
 /// </summary>

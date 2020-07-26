@@ -24,10 +24,7 @@ public struct Header
 
     public Header(PacketType _type = PacketType.NONE, int _nameSize = 0, int _size = (int)E_NETWORK.MAX_BUFFER_SIZE, int _id = -1)
     {
-        if (_id == -1)
-            this.clientId = NetworkManager.I.ClientId;
-        else
-            this.clientId = _id;
+        this.clientId = _id == -1 ? NetworkManager.I.ClientId : _id;
         this.type = _type;
         this.nameSize = _nameSize;
         this.dataSize = _size;
